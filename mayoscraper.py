@@ -41,9 +41,9 @@ def IG_job():
 	data = json.loads(script.text.replace('window._sharedData = ', '')[:-1])
 	a = []
 
-	for i in range(1):
-		f = open("shortcutsplus1127_1hour.csv", 'a', newline='')
-		writer = csv.writer(f)
+	rowofdata = ""
+
+	for i in range(11):
 		postid = (data['entry_data']['ProfilePage'][0]['user']['media']['nodes'][i]['code'])
 		postDate = (data['entry_data']['ProfilePage'][0]['user']['media']['nodes'][i]['date'])
 		likes = (data['entry_data']['ProfilePage'][0]['user']['media']['nodes'][i]['likes']['count'])
@@ -52,9 +52,15 @@ def IG_job():
 		follows = (data['entry_data']['ProfilePage'][0]['user']['follows']['count'])
 		# a.append((postid, postDate, likes, comments))
 
-		b = (postid, likes, comments)
-	writer.writerow(((datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), followers, follows,  postid, likes, comments)))
-	print((datetime.datetime.now().strftime("%H:%M:%S %d/%m/%Y") ,followers, follows, postid, likes, comments))
+		#b = (postid, likes, comments)
+		print("tried")
+		if (i < 5 and i > 10):
+			rowofdata += str(((datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"), followers, follows,  postid, likes, comments)))
+	print(rowofdata)
+	f = open("shortcutsplus1127_1hour.csv", 'a', newline='')
+	writer = csv.writer(f)
+
+	writer.writerow(rowofdata)
 	f.close()
 
 scheduler = BlockingScheduler()
