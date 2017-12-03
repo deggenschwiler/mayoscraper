@@ -13,38 +13,43 @@ import csv
 import time
 from os import system
 import random
-
+import math
 from fake_useragent import UserAgent
+
+#set user agent so they don't know this is a bot
 ua = UserAgent()
 
-goood = True
+#function to check price is the best and reasonable
+def bestprice():
+    #set random timout to not annoy the site owner
+    timeout = random.randrange(60,120,1)
+    #print how long it's going to wait this round
+    print("-------------- " + str(timeout) + "s --------------")
 
-def isitme(userMe):
-    line = []
-    for row in rows:
-        cells = row.findChildren('td')
-        for cell in cells:
-            line.append(str(cell.getText().strip().replace(" ", "")))
-            while(userMe == True):
-                if (str(cell.getText().strip().replace(" ", "")) != "deggen"):
-                    userMe = False
-                    global goood
-                    goood = False
-                else:
-                    timeout = random.randrange(60,120,1)
-                    print("-------------- " + str(timeout) + "s --------------")
-                    time.sleep(timeout)
-                    return "Your offer is the best one."
-    print lune[18]
-    return line[4]
+    if (jobject['response'][0]['seller_login'] != "deggen"):
+        betterprice = str(round(float(jobject['response'][0]['price_unit']), 0))
+        announcement = "Better price found at £" + betterprice
+        print(announcement)
+        system("say " + announcement)
+    else:
+        # check price is reasonable
+        myprice = float(jobject['response'][0]['price_unit'])
+        theirprice = float(jobject['response'][1]['price_unit'])
+        # if it's way lower - then anounce that
+        if ((theirprice - myprice) >= 25.0):
+            announcement = "Your offer is too low, change it to £" + str(theirprice - 26.0)
+            print(announcement)
+            system("say " + announcement)
+        else:
+            announcement = "Your offer is the best, @ £" + str(myprice) + " carry on."
+            print(announcement)
+    time.sleep(timeout)
 
-while(goood):
-    request = requests.get('https://bitbargain.co.uk/buy', headers={'User-Agent': ua.random})
-    content = request.content
-    soup = bs(content, 'html.parser')
-    table = soup.findChildren('table')[1]
-    rows = table.findChildren('tr')
-    isit = isitme(True)
-    print(isit)
-sagen = "say Price dropped to " + isit
-system(sagen)
+# Do until I say stop
+while(True):
+    # set target api and fake user agent
+    response = requests.get('https://bitbargain.co.uk/api/buy', headers={'User-Agent': ua.random})
+    # grab the data as an object
+    jobject = json.loads(response.content.decode('utf8'))
+    # run the price checking function
+    bestprice()
