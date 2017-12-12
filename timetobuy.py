@@ -22,7 +22,7 @@ ua = UserAgent()
 #function to check price is the best and reasonable
 def bestprice():
     #set random timout to not annoy the site owner
-    timeout = random.randrange(1,7,1)
+    timeout = random.randrange(240,720,1)
     #print how long it's going to wait this round
     print("-------------- " + str(timeout) + "s --------------")
 
